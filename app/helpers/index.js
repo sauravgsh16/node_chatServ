@@ -1,6 +1,7 @@
 'use strict';
 
 const router = require('express').Router();
+const db = require('../db');
 
 let _registerRoutes = (routes, method) => {
   for (let key in routes) {
@@ -23,6 +24,14 @@ let route = routes => {
   return router;
 }
 
+// Find a single user based on a key
+let findOne = profileID => {
+  return db.userModel.findone({
+    'profileId': profileID
+  });
+}
+
 module.exports = {
-  route
+  route,
+  findOne
 }

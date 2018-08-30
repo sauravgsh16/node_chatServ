@@ -5,7 +5,7 @@ const helpers = require('../helpers');
 module.exports = () => {
   let routes = {
     'get': {
-      '/' : (req, res, next) => {
+      '/': (req, res, next) => {
         res.render('login');
       },
       '/rooms': (req, res, next) => {
