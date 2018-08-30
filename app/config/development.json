@@ -3,9 +3,10 @@
   "dbUri": "mongodb://chatCatuser1:chatcatuser1@ds161700.mlab.com:61700/chatcatdb_dev",
   "sessionSecret": "A Secret key",
   "fb": {
-    "clientId": "235838030607253",
+    "clientID": "235838030607253",
     "clientSecret": "387fcd1a152e35b984a1a820759144e8",
-    "callbackURL": "//localhost:3000/auth/facebook/callback",
+    "callbackURL": "https://3cd5da70.ngrok.io/auth/facebook/callback",
+    "enableProof": "True",
     "profileFields": [
       "id",
       "displayName",

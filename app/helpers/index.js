@@ -25,13 +25,46 @@ let route = routes => {
 }
 
 // Find a single user based on a key
+// By defualt findOne method of Mongoose returns a promise
 let findOne = profileID => {
-  return db.userModel.findone({
+  return db.userModel.findOne({
     'profileId': profileID
+  });
+}
+
+let createNewUser = profile => {
+  return new Promise((resolve, reject) => {
+    let newUser = new db.userModel({
+      profileId: profile.id,
+      fullName: profile.displayName,
+      profilePic: profile.photos[0].value || ''
+    });
+
+    newUser.save(err => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(newUser)
+      }
+    });
+  });
+}
+
+let findById = (id) => {
+  return new Promise((resolve, reject) => {
+    db.userModel.findById(id, (err, user) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(user);
+      }
+    });
   });
 }
 
 module.exports = {
   route,
-  findOne
+  findOne,
+  createNewUser,
+  findById
 }
