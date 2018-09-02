@@ -4,7 +4,44 @@
 	<meta charset="UTF-8">
 	<title>ChatCat - Rooms</title>
 	<link rel="stylesheet" href="./css/roomsStyles.css">
-	<script src="/js/jquery-2.1.4.min.js"></script>
+  <script src="/js/jquery-2.1.4.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    'use strict';
+    $(() => {
+      // the io function here is brought in by the socket.io.js file included in the script tag
+      let socket = io('<%= host %>' + '/roomslist');
+      // '/roomslist' is not a route. it is a socket namespace or a pipe. This is an identifier of a pipeline
+      // between the server and the client
+      // The above will try to create a connection with the server via the namespace defined above.
+      
+      let newRoomInput = $("input[name='roomName']");
+      let renderChatroom = chatrooms => {
+        let roomsListDiv = $('#roomsListUL');
+        let listStr = '';
+        for (let chatroom of chatrooms) {
+          listStr += `<a href="/chat/${chatroom.roomID}"><li>${chatroom.room}</li></a>`
+        }
+        // First clear out the contents and then append the new listStr
+        roomsListDiv.html('').append(listStr);
+      }
+      // Get a list of chatrooms
+      socket.emit('getChatRooms');
+
+      // Event listener for chatRoomsList
+      socket.on('chatRoomsList', (allRooms) => {
+        renderChatroom(JSON.parse(allRooms));
+      });
+
+      $('#createBtn').on('click', () => {
+        if (newRoomInput.val() !== '') {
+          socket.emit('createNewRoom', newRoomInput.val());
+          // Clear out input field once we have the value
+          newRoomInput.val('');
+        }
+      });
+    });
+  </script>
 </head>
 <body>
 	<div class="container">
@@ -14,7 +51,7 @@
 		<div class="controls">
 			<div class="userPicHolder"><img src="<%= user.profilePic %>" alt="><%= user.fullName %>"></div>
 			<p class="userName"><%= user.fullName %></p>
-			<a href="login.htm" id="logOutBtn">Logout</a>
+			<a href="/logout" id="logOutBtn">Logout</a>
 		</div>
 		<div class="controls">
 			<input type="text" name="roomName" placeholder="Create a new Chatroom">
@@ -23,8 +60,6 @@
 		<div class="roomsListDiv">
 			<ul class="roomsList" id="roomsListUL">
 			<!-- Loop list items here -->
-				<a href="chatroom.htm"><li>World Cuisine</li></a>
-				<a href="chatroom.htm"><li>Coffee and Conversations</li></a>
 			<!-- Loop ends -->
 			</ul>
 		</div>
