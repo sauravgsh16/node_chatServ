@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('crypto');
 const router = require('express').Router();
 const db = require('../db');
 
@@ -72,10 +73,43 @@ const isAuthenticated = (req, res, next) => {
   }
 }
 
+// Function to see if newChatroom already exists or not
+
+const findRoomByName = (allrooms, room) => {
+  let findRoom = allrooms.findIndex((element, index, array) => {
+    if (element.room === room) {
+      return true
+    } else {
+      return false
+    }
+  });
+
+  return findRoom === -1 ? false : true
+}
+
+// Generate a random hex for roomID
+const randomHex = () => {
+  return crypto.randomBytes(24).toString('hex');
+}
+
+// Find a chatroom with a given ID
+const findRoomById = (allrooms, roomID) => {
+  return allrooms.find((element, index, array) => {
+    if (element.roomID === roomID) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+}
+
 module.exports = {
   route,
   findOne,
   createNewUser,
   findById,
-  isAuthenticated
+  isAuthenticated,
+  findRoomByName,
+  randomHex,
+  findRoomById
 }
